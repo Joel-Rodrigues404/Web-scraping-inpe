@@ -1,0 +1,15 @@
+{
+    "Nº MÁX. DE DIAS SECOS CONSECUTIVOS": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0012//PDT0002/CDD",
+    "Nº MÁX. DE DIAS CONSECUTIVOS COM CHUVA": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0014//PDT0002/CWD",
+    "Nº DE DIAS COM CHUVA > 10MM": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0019//PDT0002/R10mm",
+    "Nº DE DIAS COM CHUVA > 20MM": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0020//PDT0002/R20mm",
+    "PRECIPITAÇÃO TOTAL > PERCENTIL 95": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0022//PDT0002/R95p",
+    "PRECIPITAÇÃO TOTAL > PERCENTIL 99": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0023//PDT0002/R99p",
+    "QUANT. MÁX. DE CHUVA EM 1 DIA": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0024//PDT0002/RX1day",
+    "QUANT. MÁX. DE CHUVA EM 5 DIAS CONSEC.": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0025//PDT0002/RX5day",
+    "PRECIPITAÇÃO MÉDIA EM DIAS ÚMIDOS": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0026//PDT0002/SDII",
+    "% DE DIAS COM TEMP. MÍNIMA < PERCENTIL 10": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0028//PDT0002/TN10p",
+    "% DE DIAS COM TEMP. MÍNIMA > PERCENTIL 90": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0029//PDT0002/TN90p",
+    "% DE DIAS COM TEMP. MÁXIMA < PERCENTIL 10": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0033//PDT0002/TX10p",
+    "% DE DIAS COM TEMP. MÁXIMA > PERCENTIL 90": "http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/JSON//-3.73/-38.50/PR0002/MO0003/EX0003/PE0001/CE0007/VR0034//PDT0002/TX90p"
+}

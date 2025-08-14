@@ -1,0 +1,14 @@
+# Ficheiros de ambiente virtual e cache do Python
+.venv/
+__pycache__/
+*.pyc
+
+#env com o token
+.env
+
+# Pastas com os dados gerados pelo script
+downloads/
+final/
+
+# Ficheiros de cache do sistema
+.DS_Store

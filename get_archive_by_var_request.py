@@ -1,42 +1,22 @@
-import re
+# -*- coding: utf-8 -*-
 import requests
 import os
-import json
 
-
-def baixar_arquivo(arquivo_json, variavel, token, pasta_destino="downloads", nome_arquivo=""):
-    with open(arquivo_json, "r", encoding="utf-8") as f:
-        dados = json.load(f)
-
-    comando_curl = dados[variavel]
-    print(f"para > {variavel}: {comando_curl}")
-
-    url_match = re.search(r"(https?://\S+)", comando_curl)
-    if not url_match:
-        raise ValueError("Não foi possível encontrar a URL no texto")
-    url = url_match.group(1)
-
-    url_mod = re.sub(r"(?i)\bjson\b", "CSV", url)
-
-    headers = {"Authorization": "Token " + token}
-
+def baixar_arquivo(url, token, pasta_destino, nome_ficheiro):
+    
+    #Achei melhor simplificar, fiquei com medo do teu codigo
+    
+    headers = {"Authorization": f"Token {token}"}
     os.makedirs(pasta_destino, exist_ok=True)
-    caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
+    caminho_ficheiro = os.path.join(pasta_destino, nome_ficheiro)
 
-    response = requests.get(url_mod, headers=headers)
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()  # Lança um erro para códigos de status HTTP ruins
 
-    if response.status_code == 200:
-        with open(caminho_arquivo, "wb") as f:
+        with open(caminho_ficheiro, "wb") as f:
             f.write(response.content)
-        print(f"Arquivo salvo em: {caminho_arquivo}")
-    else:
-        try:
-            with open("erros.json", "r", encoding="utf-8") as f:
-                erros = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            erros = {}
+        print(f"    ✓ Ficheiro salvo em: {caminho_ficheiro}")
 
-        erros[variavel] = url
-
-        with open("erros.json", "w", encoding="utf-8") as f:
-            json.dump(erros, f, indent=4, ensure_ascii=False)
+    except requests.exceptions.RequestException as e:
+        print(f"    [ERRO] Falha na requisição para {nome_ficheiro}: {e}")

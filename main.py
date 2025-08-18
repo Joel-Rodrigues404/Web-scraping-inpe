@@ -4,22 +4,34 @@ from dotenv import load_dotenv
 import os
 import time
 
-# Importa a função de download simplificada
+
 from get_archive_by_var_request import baixar_arquivo
+from unir_csvs import unir_csvs_por_municipio 
 
 # --- CONFIGURAÇÃO ---
 load_dotenv()
 
 # .env
 TOKEN = os.getenv("TOKEN")
+
 VARIAVEIS_PARA_BAIXAR = os.getenv("VARIAVEIS", "").split(",")
 ANUAIS = os.getenv("ANUAIS", "").split(",")
 ARQUIVO_MUNICIPIOS = "municipios.csv"
 
+# Constantes para a URL
+PROJETO = "PR0002"
+MODELO_GLOBAL = "MO0003"
+EXPERIMENTO = "EX0003"
+PERIODO = "PE0001"
+CENARIO = "CE0007"
+TIPO_SAIDA_PONTO = "Ponto"
+TIPO_SAIDA_CSV = "CSV"
+PERIODO_DOWNLOAD = "PDT0002"
+FREQ_ANUAL = "FR0001"
+FREQ_MENSAL = "FR0003"
 
-# Pega cada código da API e converte diretamente pro CSV, pretendo transformar em uma tabela JSON, provavelmente nao vou fazer, estou caolho no momento
+# O dicionário retirado a partir do INPE
 MAPEAMENTO_VARIAVEIS = {
-    # Variáveis Mensais
     "TEMPERATURA MÁXIMA":                   {"codigo": "VR0001", "nome_curto": "tasmax"},
     "TEMPERATURA MÍNIMA":                   {"codigo": "VR0002", "nome_curto": "tasmin"},
     "TEMPERATURA MÉDIA":                    {"codigo": "VR0003", "nome_curto": "tas"},
@@ -32,7 +44,6 @@ MAPEAMENTO_VARIAVEIS = {
     "COMPONENTE V":                         {"codigo": "VR0011", "nome_curto": "vas"},
     "INTENSIDADE DO VENTO":                 {"codigo": "VR0046", "nome_curto": "sfcWind"},
     "PRESSÃO À SUPERFÍCIE":                 {"codigo": "VR0047", "nome_curto": "ps"},
-    # Variáveis Anuais
     "Nº MÁX. DE DIAS SECOS CONSECUTIVOS":    {"codigo": "VR0012", "nome_curto": "CDD"},
     "Nº MÁX. DE DIAS CONSECUTIVOS COM CHUVA":{"codigo": "VR0014", "nome_curto": "CWD"},
     "Nº DE DIAS COM CHUVA > 10MM":          {"codigo": "VR0019", "nome_curto": "R10mm"},
@@ -48,39 +59,27 @@ MAPEAMENTO_VARIAVEIS = {
     "% DE DIAS COM TEMP. MÁXIMA > PERCENTIL 90": {"codigo": "VR0034", "nome_curto": "TX90p"},
 }
 
-# --- FUNÇÃO PRINCIPAL DA AUTOMAÇÃO ---
-
 def main():
     try:
-        # Lê o CSV especificando o ponto e vírgula como separador
-        df_municipios = pd.read_csv(
-            ARQUIVO_MUNICIPIOS, 
-            encoding='utf-8-sig',
-            sep=';' 
-        )
+        df_municipios = pd.read_csv(ARQUIVO_MUNICIPIOS, encoding='utf-8-sig', sep=';')
     except FileNotFoundError:
-        print(f"ERRO CRÍTICO: Ficheiro '{ARQUIVO_MUNICIPIOS}' não encontrado.")
+        print(f"ERRO CRÍTICO: Arquivo '{ARQUIVO_MUNICIPIOS}' não encontrado.")
         return
     except Exception as e:
         print(f"ERRO CRÍTICO ao ler o CSV: {e}")
         return
 
+    # Limpeza de dados
+    df_municipios['latitude'] = df_municipios['latitude'].astype(str).str.replace(',', '.', regex=False)
+    df_municipios['longitude'] = df_municipios['longitude'].astype(str).str.replace(',', '.', regex=False)
+
     total_municipios = len(df_municipios)
     print(f"Iniciando automação para {total_municipios} municípios.")
 
     for index, row in df_municipios.iterrows():
-        try:
-            municipio_nome = row['municipio']
-            # Para compatibilizar com qualquer CSV
-            latitude = str(row['latitude']).replace(',', '.')
-            longitude = str(row['longitude']).replace(',', '.')
-        except KeyError as e:
-            print(f"ERRO CRÍTICO: Não foi possível encontrar a coluna {e} no CSV.")
-            print(f"Colunas encontradas: {list(df_municipios.columns)}")
-            return
-        except Exception as e:
-            print(f"ERRO ao processar a linha {index + 1} do CSV: {e}")
-            continue # Pula para o próximo município
+        municipio_nome = row['municipio']
+        latitude = row['latitude']
+        longitude = row['longitude']
         
         print(f"\n{'='*60}")
         print(f"PROCESSANDO: {municipio_nome.upper()} ({index + 1}/{total_municipios})")
@@ -90,33 +89,36 @@ def main():
 
         for var_nome in VARIAVEIS_PARA_BAIXAR:
             if var_nome not in MAPEAMENTO_VARIAVEIS:
-                print(f"  [AVISO] Variável '{var_nome}' não reconhecida. A pular.")
+                print(f"  [AVISO] Variável '{var_nome}' não reconhecida. Pulando.")
                 continue
 
             var_info = MAPEAMENTO_VARIAVEIS[var_nome]
-            
+                        
             if var_nome in ANUAIS:
                 frequencia_str = "Anual"
-                frequencia_cod = "FR0001"
+                frequencia_cod = FREQ_ANUAL
             else:
                 frequencia_str = "Mensal"
-                frequencia_cod = "FR0003"
-
-            # Constrói a URL de download diretamente
+                frequencia_cod = FREQ_MENSAL
+            
             url_final = (
-                f"http://4cn-api.cptec.inpe.br/api/v1/public/Ponto/CSV/{frequencia_str}/"
-                f"{latitude}/{longitude}/PR0002/MO0003/EX0003/PE0001/CE0007/"
-                f"{var_info['codigo']}/{frequencia_cod}/PDT0002/{var_info['nome_curto']}"
+                f"http://4cn-api.cptec.inpe.br/api/v1/public/{TIPO_SAIDA_PONTO}/{TIPO_SAIDA_CSV}/{frequencia_str}/"
+                f"{latitude}/{longitude}/{PROJETO}/{MODELO_GLOBAL}/{EXPERIMENTO}/{PERIODO}/{CENARIO}/"
+                f"{var_info['codigo']}/{frequencia_cod}/{PERIODO_DOWNLOAD}/{var_info['nome_curto']}"
             )
             
-            nome_ficheiro_csv = f"{var_nome.replace(' ', '_').replace('>', 'maior')}.csv"
+            nome_arquivo_csv = f"{var_nome.replace(' ', '_').replace('>', 'maior')}.csv"
             
-            print(f"  -> A baixar: {var_nome}")
-            baixar_arquivo(url_final, TOKEN, pasta_destino, nome_ficheiro_csv)
+            print(f"  -> Baixando: {var_nome}")
+            baixar_arquivo(url_final, TOKEN, pasta_destino, nome_arquivo_csv)
             time.sleep(1)
+
+        # Chamada final para unificação dos CSVs, it's done 
+        print(f"\n  -> Unificando dados para {municipio_nome}...")
+        arquivo_final = os.path.join("final", f"{municipio_nome}.csv")
+        unir_csvs_por_municipio(pasta_destino, arquivo_final)
 
     print("\n\nPROCESSO DE AUTOMAÇÃO CONCLUÍDO!")
 
 if __name__ == "__main__":
     main()
-

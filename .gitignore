@@ -3,7 +3,7 @@
 __pycache__/
 *.pyc
 
-#env com o token
+# .env com o token
 .env
 
 # Pastas com os dados gerados pelo script

@@ -17,7 +17,7 @@ ANUAIS = os.getenv("ANUAIS", "").split(",")
 ARQUIVO_MUNICIPIOS = "municipios.csv"
 
 
-# Pega cada código da API e converte diretamente pro CSV, tá muito feio e desorganizado
+# Pega cada código da API e converte diretamente pro CSV, pretendo transformar em uma tabela JSON, provavelmente nao vou fazer, estou caolho no momento
 MAPEAMENTO_VARIAVEIS = {
     # Variáveis Mensais
     "TEMPERATURA MÁXIMA":                   {"codigo": "VR0001", "nome_curto": "tasmax"},
@@ -71,7 +71,7 @@ def main():
     for index, row in df_municipios.iterrows():
         try:
             municipio_nome = row['municipio']
-            # Converte as coordenadas para string, tratando a vírgula como separador decimal(codigo lixo, se quiser der uma limpa, no final o problema era o csv que fiz errado)
+            # Para compatibilizar com qualquer CSV
             latitude = str(row['latitude']).replace(',', '.')
             longitude = str(row['longitude']).replace(',', '.')
         except KeyError as e:
@@ -120,5 +120,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-#Acredito que dá pra deixar o codigo mais legivel, tem bastante coisa redundante, talvez façamos depois.
-#além disso as libs que tu usou foram bem legais de se aprender, embora eu nao tenha aprendido de fato kkk, mas deu uma xp

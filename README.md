@@ -17,8 +17,8 @@ Foi desenvolvido para apoiar atividades de pesquisa e análise de dados para a U
 ## Instalação
 **1. Clone o Repositório:**
 ```sh
-git clone [https://github.com/Joel-Rodrigues404/Web-scraping-inpe.git](https://github.com/Joel-Rodrigues404/Web-scraping-inpe.git)
-cd Web-scraping-inpe
+git clone https://github.com/meursault03/INPE-API-pipeline
+cd INPE-API-pipeline
 ```
 **2. Crie e ative um ambiente virtual:**
 ```sh

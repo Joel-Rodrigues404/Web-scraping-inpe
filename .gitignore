@@ -12,3 +12,6 @@ final/
 
 # Ficheiros de cache do sistema
 .DS_Store
+
+# Outros
+ESTATISTICAS_TOTAIS_CEARA_184_MUNICIPIOS.csv
